@@ -551,7 +551,7 @@ footer a:hover { color: var(--txt); }
 </footer>
 
 <!-- 页面级兔时笺：拖到哪、看到哪 -->
-<div class="fclock" id="pageClock" style="--fc-acc: #22d3ee" role="toolbar" aria-label="页面悬浮时钟，可拖动，双击最小化">
+<div class="fclock" id="pageClock" style="--fc-acc: #22d3ee" role="toolbar" aria-label="页面悬浮时钟·兔时笺，可拖动，双击最小化">
   <span class="t" data-t>--:--:--</span><span class="ms" data-ms>.0</span>
 </div>
 
@@ -649,7 +649,7 @@ footer a:hover { color: var(--txt); }
     return { place: place };
   }
 
-  /* 手机模型内的悬浮时钟 */
+  /* 手机模型内的兔时笺 */
   var screen = document.getElementById("demoScreen");
   var demoClock = document.getElementById("demoClock");
   if (screen && demoClock) {
@@ -670,7 +670,7 @@ footer a:hover { color: var(--txt); }
     });
   });
 
-  /* 页面级悬浮时钟（右下角，可拖全屏） */
+  /* 页面级兔时笺（右下角，可拖全屏） */
   var pageClock = document.getElementById("pageClock");
   if (pageClock) {
     var bodyBounds = { clientWidth: 0, clientHeight: 0 };

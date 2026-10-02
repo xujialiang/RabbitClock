@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>隐私政策 · 兔时笺 Rabbit Clock</title>
+<meta name="description" content="兔时笺（Rabbit Clock）隐私政策：本应用不收集、不存储、不上传任何个人数据。Privacy Policy: we collect nothing.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='9' fill='%23070b16'/%3E%3Ccircle cx='18' cy='18' r='11' fill='none' stroke='%235b8cff' stroke-width='3'/%3E%3Cpath d='M18 11v7l5 3.5' fill='none' stroke='%2322d3ee' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #070b16; --panel: rgba(255,255,255,.045); --line: rgba(255,255,255,.09);
+  --txt: #e8edf7; --sub: #92a0ba; --acc2: #22d3ee; --acc1: #5b8cff;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--txt);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "HarmonyOS Sans SC", "MiSans", "Microsoft YaHei", sans-serif;
+  min-height: 100vh; line-height: 1.75;
+}
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(900px 500px at 12% -10%, rgba(91,140,255,.14), transparent 60%),
+    radial-gradient(800px 520px at 95% 8%, rgba(34,211,238,.08), transparent 60%);
+}
+.wrap { max-width: 780px; margin: 0 auto; padding: 0 22px; }
+a { color: var(--acc2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+nav.top {
+  position: sticky; top: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  padding: 13px 26px;
+  background: rgba(7,11,22,.82); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+nav.top .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+nav.top .brand small { display: block; font-weight: 400; color: var(--sub); font-size: 12px; }
+.langs { display: flex; gap: 8px; font-size: 14px; }
+.langs a { padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--sub); }
+.langs a:hover { color: var(--txt); text-decoration: none; border-color: var(--acc2); }
+header.hero { padding: 54px 0 10px; }
+header.hero h1 { font-size: clamp(26px, 5vw, 38px); letter-spacing: .5px; }
+header.hero .date { color: var(--sub); font-size: 14px; margin-top: 8px; }
+.badge {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 18px;
+  padding: 8px 16px; border-radius: 12px; font-size: 14px;
+  background: rgba(52,211,153,.1); border: 1px solid rgba(52,211,153,.35); color: #34d399;
+}
+section.policy { padding: 18px 0 40px; }
+section.policy h2 {
+  font-size: 18px; margin: 34px 0 10px; padding-left: 12px;
+  border-left: 3px solid; border-image: linear-gradient(#5b8cff, #22d3ee) 1;
+}
+section.policy p, section.policy li { color: #c3cdde; font-size: 15.5px; }
+section.policy ul { padding-left: 22px; margin: 8px 0; }
+section.policy b { color: var(--txt); }
+hr.sep { border: none; border-top: 1px solid var(--line); margin: 46px 0; }
+footer { border-top: 1px solid var(--line); padding: 26px 0 60px; color: var(--sub); font-size: 13px; }
+footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <a class="brand" href="index.html">
+    <svg viewBox="0 0 36 36" width="24" height="24" aria-hidden="true"><circle cx="18" cy="18" r="12" fill="none" stroke="#5b8cff" stroke-width="3"/><path d="M18 10.5v7.5l5.2 3.4" fill="none" stroke="#22d3ee" stroke-width="3" stroke-linecap="round"/></svg>
+    <span>兔时笺<small>Rabbit Clock</small></span>
+  </a>
+  <div class="langs">
+    <a href="#zh">中文</a>
+    <a href="#en">English</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ═══════════ 中文 ═══════════ -->
+<section class="policy" id="zh" lang="zh-CN">
+<header class="hero">
+  <h1>隐私政策</h1>
+  <div class="date">生效日期：2026 年 10 月 2 日 · 适用平台：iOS / Android / HarmonyOS</div>
+  <div class="badge">本应用不收集、不存储、不上传任何个人数据</div>
+</header>
+
+<p>「兔时笺」（Rabbit Clock，下称"本应用"）非常重视您的隐私。本应用<b>不收集、不存储、不上传任何个人数据</b>。</p>
+
+<h2>本应用访问的网络</h2>
+<p>本应用仅在以下时机与您选择的时间服务器通信，用于时钟校准：</p>
+<ul>
+  <li>打开「时间源」页面、切换时间源、开启悬浮显示或回到前台时（10 分钟内不重复）</li>
+  <li>内置时间源为：中国国家授时中心（ntp.ntsc.ac.cn）、阿里公共 NTP，以及淘宝、大麦、京东、美团、拼多多、云闪付的公开时间接口</li>
+</ul>
+<p>通信内容仅为标准时间查询（NTP/HTTP），<b>不包含任何可识别您身份的信息</b>，服务器也无法将请求关联到您。</p>
+
+<h2>本应用存储的数据</h2>
+<p>所有设置（样式、时间源选择、校准结果、计时记录）仅保存在您的设备本地（系统偏好存储），卸载即删除，<b>不会同步或备份到任何服务器</b>。</p>
+
+<h2>权限使用说明</h2>
+<ul>
+  <li><b>通知</b>：仅用于倒计时到点提醒，内容不经过任何服务器</li>
+  <li><b>画中画</b>（iOS）：用于悬浮显示时间</li>
+  <li><b>悬浮窗</b>（Android / HarmonyOS）：用于悬浮显示时间</li>
+  <li><b>后台音频</b>（iOS）：仅为维持画中画悬浮显示的系统要求，不播放可听内容</li>
+</ul>
+
+<h2>儿童</h2>
+<p>本应用无年龄限制（4+），不面向儿童收集信息——因为本应用不收集任何人的信息。</p>
+
+<h2>联系方式</h2>
+<!-- TODO: 上架前替换为真实邮箱 -->
+<p>对本政策有疑问，请联系：<b>support@example.com</b></p>
+
+<h2>变更</h2>
+<p>如政策变更将在本页面更新并修改生效日期。</p>
+</section>
+
+<hr class="sep">
+
+<!-- ═══════════ English ═══════════ -->
+<section class="policy" id="en" lang="en">
+<header class="hero">
+  <h1>Privacy Policy</h1>
+  <div class="date">Effective date: October 2, 2026 · Platforms: iOS / Android / HarmonyOS</div>
+  <div class="badge">This app does not collect, store, or upload any personal data</div>
+</header>
+
+<p>Rabbit Clock (“this app”) takes your privacy seriously. This app <b>does not collect, store, or upload any personal data</b>.</p>
+
+<h2>Network access</h2>
+<p>The app only communicates with the time servers you choose, solely for clock calibration, in these situations:</p>
+<ul>
+  <li>When you open the Time Source page, switch time sources, enable floating display, or return to the foreground (no more than once every 10 minutes)</li>
+  <li>Built-in sources: National Time Service Center of China (ntp.ntsc.ac.cn), Alibaba Public NTP, and public time endpoints of Taobao, Damai, JD, Meituan, Pinduoduo, and UnionPay</li>
+</ul>
+<p>Communication consists of standard time queries (NTP/HTTP) only and <b>contains no information that can identify you</b>; the servers cannot associate the requests with you.</p>
+
+<h2>Data stored by the app</h2>
+<p>All settings (appearance, time source selection, calibration results, timer records) are stored locally on your device using system preference storage. Uninstalling the app deletes them. <b>Nothing is ever synced or backed up to any server.</b></p>
+
+<h2>Permission usage</h2>
+<ul>
+  <li><b>Notifications</b>: countdown alerts only; the content never passes through any server</li>
+  <li><b>Picture-in-Picture</b> (iOS): used to display the floating clock</li>
+  <li><b>Floating window</b> (Android / HarmonyOS): used to display the floating clock</li>
+  <li><b>Background audio</b> (iOS): a system requirement to keep Picture-in-Picture alive; no audible content is played</li>
+</ul>
+
+<h2>Children</h2>
+<p>This app is rated 4+ and is not directed at children for data collection — because the app collects no one's data.</p>
+
+<h2>Contact</h2>
+<!-- TODO: replace with the real support email before launch -->
+<p>Questions about this policy: <b>support@example.com</b></p>
+
+<h2>Changes</h2>
+<p>If this policy changes, this page will be updated with a new effective date.</p>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 兔时笺 Rabbit Clock</span>
+    <span><a href="index.html">← 返回首页 / Back</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

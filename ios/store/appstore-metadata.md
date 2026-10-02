@@ -61,7 +61,7 @@
 ## 隐私（Privacy → App Privacy 表单）
 
 - **不收集任何数据**（Data Types 全部不勾选）
-- 隐私政策 URL：见 privacy-policy.md（需自行托管，建议 GitHub Pages）
+- 隐私政策 URL：https://xujialiang.github.io/RabbitClock/privacy-policy.html（GitHub Pages，随 site/dist 自动部署）
 
 ## 出口合规
 

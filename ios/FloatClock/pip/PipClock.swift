@@ -21,6 +21,9 @@ final class PipClockController: NSObject {
     private var hostView: UIView?
     private(set) var active = false
     private var userPaused = false
+    /// PiP 会话的 PTS 原点（宿主时钟）：帧时间戳从 0 起算，
+    /// 配合有限时长的 timeRange 让系统按"点播"对待（去掉左下角直播角标）
+    private var ptsOrigin: Double = 0
 
     private let bufW = 640
     private let bufH = 320
@@ -46,6 +49,7 @@ final class PipClockController: NSObject {
         hostView = host
 
         startKeepAliveAudio()
+        ptsOrigin = CACurrentMediaTime()
         renderFrame() // 先入队一帧，否则 PiP 无法启动
 
         if pip == nil {
@@ -259,7 +263,7 @@ final class PipClockController: NSObject {
         guard let desc else { return nil }
         var timing = CMSampleTimingInfo(
             duration: .invalid,
-            presentationTimeStamp: CMTime(seconds: CACurrentMediaTime(), preferredTimescale: 600),
+            presentationTimeStamp: CMTime(seconds: max(0, CACurrentMediaTime() - ptsOrigin), preferredTimescale: 600),
             decodeTimeStamp: .invalid)
         var sb: CMSampleBuffer?
         CMSampleBufferCreateForImageBuffer(
@@ -369,7 +373,11 @@ extension PipClockController: AVPictureInPictureSampleBufferPlaybackDelegate {
 
     nonisolated func pictureInPictureControllerTimeRangeForPlayback(
         _ controller: AVPictureInPictureController
-    ) -> CMTimeRange { CMTimeRange(start: .zero, duration: .positiveInfinity) }
+    ) -> CMTimeRange {
+        // 有限时长=点播语义（去掉直播角标）；30 天上限远超实际会话长度，
+        // 且进度条已被 controlsStyle 隐藏，不会出现拖动条
+        CMTimeRange(start: .zero, duration: CMTime(seconds: 30 * 24 * 3600, preferredTimescale: 600))
+    }
 
     nonisolated func pictureInPictureControllerIsPlaybackPaused(
         _ controller: AVPictureInPictureController

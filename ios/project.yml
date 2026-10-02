@@ -7,9 +7,9 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.9"
-    MARKETING_VERSION: "1.1.3"
-    CURRENT_PROJECT_VERSION: "13"
-    DEVELOPMENT_TEAM: ""
+    MARKETING_VERSION: "1.1.4"
+    CURRENT_PROJECT_VERSION: "14"
+    DEVELOPMENT_TEAM: "5UDY685QHH"
     CODE_SIGN_STYLE: Automatic
 targets:
   FloatClock:
@@ -20,6 +20,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rabbitai-lab.floatclock
+        # 仅 iPhone：竖屏锁定 + 现有图标集；iPad 通用版需补 167px 图标与适配
+        TARGETED_DEVICE_FAMILY: "1"
     info:
       path: FloatClock/Info.plist
       properties:

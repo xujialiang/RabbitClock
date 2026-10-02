@@ -148,7 +148,7 @@ final class PipClockController: NSObject {
             if style.showWeek { bits.append(Fmt.weekLine(displayNow)) }
             if style.showBattery {
                 let lv = UIDevice.current.batteryLevel
-                if lv >= 0 { bits.append("\(Int(lv * 100))%") }
+                if lv >= 0 { bits.append("🔋 \(Int(lv * 100))%") }
             }
             out.sub = bits.joined(separator: " · ")
         case .stopwatch:

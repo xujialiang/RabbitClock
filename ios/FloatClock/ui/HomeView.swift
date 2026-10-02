@@ -225,7 +225,12 @@ private struct ClockPanel: View {
 
     private var subLine: String {
         let displayNow = TimeSync.shared.now()
-        return Fmt.dateLine(displayNow) + " " + Fmt.weekLine(displayNow)
+        var parts = [Fmt.dateLine(displayNow), Fmt.weekLine(displayNow)]
+        if model.style.showBattery {
+            let lv = UIDevice.current.batteryLevel
+            if lv >= 0 { parts.append("🔋 \(Int(lv * 100))%") }
+        }
+        return parts.joined(separator: " ")
     }
 
     private var pillText: String {

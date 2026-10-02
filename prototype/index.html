@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>悬浮时钟 · HarmonyOS / Android 双端高保真原型</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-platform="android">
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 36 36" width="26" height="26"><circle cx="18" cy="18" r="15" fill="none" stroke="currentColor" stroke-width="3"/><path d="M18 9v9l6 4" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <h1>悬浮时钟 <span class="ver">双端高保真原型 v0.9</span></h1>
+      <p>HarmonyOS NEXT / Android · 待确认稿</p>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="plat-switch" id="platSwitch" role="tablist" aria-label="平台切换">
+      <button class="active" data-plat="android" role="tab">Android</button>
+      <button data-plat="harmony" role="tab">鸿蒙</button>
+    </div>
+    <a class="doc-link" href="../docs/01-调研报告.md" title="打开调研文档">配套文档 ↗</a>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="active" data-tab="demo">悬浮演示</button>
+  <button data-tab="styles">时钟样式</button>
+  <button data-tab="appui">App 界面</button>
+  <button data-tab="permission">权限引导</button>
+  <button data-tab="widgets">小组件 · 实况窗</button>
+</nav>
+
+<main>
+
+<!-- ══════════════ TAB 1 悬浮演示 ══════════════ -->
+<section class="tab-panel active" id="tab-demo">
+  <div class="stage">
+
+    <div class="phone-col">
+      <div class="phone">
+        <div class="screen" id="demoScreen">
+          <div class="statusbar">
+            <span class="sb-time" data-sbtime>9:41</span>
+            <span class="sb-ico">
+              <i class="sig"></i><i class="sig"></i><i class="sig"></i><i class="sig off"></i>
+              <span class="net">5G</span>
+              <i class="batt"><i class="batt-fill" style="width:78%"></i></i>
+            </span>
+          </div>
+
+          <div class="wallpaper wp-demo"></div>
+
+          <div class="home-icons">
+            <div class="hi"><span class="hi-ic" style="--c1:#34d399;--c2:#0ea5e9">微</span>微信</div>
+            <div class="hi"><span class="hi-ic" style="--c1:#111;--c2:#333">抖</span>抖音</div>
+            <div class="hi"><span class="hi-ic" style="--c1:#f59e0b;--c2:#ef4444">淘</span>淘宝</div>
+            <div class="hi"><span class="hi-ic" style="--c1:#60a5fa;--c2:#4f46e5">知</span>知乎</div>
+            <div class="hi"><span class="hi-ic" style="--c1:#f472b6;--c2:#a855f7">B</span>哔哩</div>
+            <div class="hi"><span class="hi-ic" style="--c1:#94a3b8;--c2:#475569">设</span>设置</div>
+            <div class="hi"><span class="hi-ic" style="--c1:#22d3ee;--c2:#3b82f6">相</span>相机</div>
+            <div class="hi"><span class="hi-ic" style="--c1:#fbbf24;--c2:#f97316">支</span>支付宝</div>
+          </div>
+
+          <div class="dock">
+            <span class="hi-ic" style="--c1:#34d399;--c2:#0ea5e9">电</span>
+            <span class="hi-ic" style="--c1:#f87171;--c2:#dc2626">网</span>
+            <span class="hi-ic" style="--c1:#a78bfa;--c2:#7c3aed">音</span>
+            <span class="hi-ic" style="--c1:#facc15;--c2:#f59e0b">商</span>
+          </div>
+
+          <!-- 悬浮时钟本体 -->
+          <div class="float-clock fc-capsule" id="floatClock" style="top:96px;left:50%;">
+            <span class="fc-main">
+              <span class="fc-time" data-fc-time>14:23</span><span class="fc-sec" data-fc-sec>08</span><span class="fc-ms" data-fc-ms hidden>.4</span>
+            </span>
+            <span class="fc-sub" data-fc-sub hidden>10月2日 周四 · 78%</span>
+          </div>
+          <div class="fc-alert-badge" id="fcAlert" hidden>时间到！</div>
+
+          <div class="drag-hint" id="dragHint">⇠ 拖我 · 双击最小化</div>
+        </div>
+      </div>
+      <p class="phone-cap">真实走秒演示：拖动 / 双击最小化 / 松手贴边吸附（模拟任意 App 界面悬浮）</p>
+    </div>
+
+    <div class="panel-col">
+
+      <div class="card">
+        <div class="card-h"><h3>① 计时模式</h3><span class="pill" id="modePill">时钟</span></div>
+        <div class="seg" id="modeSeg">
+          <button class="active" data-mode="clock">时钟</button>
+          <button data-mode="stopwatch">秒表</button>
+          <button data-mode="countdown">倒计时</button>
+        </div>
+
+        <div class="mode-extra" id="exStopwatch" hidden>
+          <div class="row">
+            <button class="btn primary" id="swStart">启动</button>
+            <button class="btn ghost" id="swReset">重置</button>
+            <button class="btn ghost" id="swLap">计次</button>
+          </div>
+          <ul class="laps" id="swLaps"></ul>
+        </div>
+
+        <div class="mode-extra" id="exCountdown" hidden>
+          <div class="chip-row" id="cdPresets">
+            <button class="chip" data-min="1">1 分钟</button>
+            <button class="chip" data-min="3">3 分钟</button>
+            <button class="chip" data-min="5" >5 分钟</button>
+            <button class="chip" data-min="10">10 分钟</button>
+            <button class="chip" data-min="25">25 分钟</button>
+            <button class="chip" data-min="60">60 分钟</button>
+          </div>
+          <div class="row">
+            <button class="btn primary" id="cdStart">开始</button>
+            <button class="btn ghost" id="cdReset">重置</button>
+          </div>
+          <div class="cd-progress"><i id="cdBar" style="width:100%"></i></div>
+          <p class="note">到点：悬浮窗红色闪烁 + 铃声/振动 + 系统通知（浏览器演示为闪烁提示）</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h3>② 悬浮窗样式</h3><span class="pill-ghost">实时生效</span></div>
+
+        <div class="ctl-row"><label>主题色</label>
+          <div class="swatches" id="swatches">
+            <button data-c="#22d3ee" style="--sw:#22d3ee" class="active" title="青"></button>
+            <button data-c="#f4f7ff" style="--sw:#f4f7ff" title="白"></button>
+            <button data-c="#ffb454" style="--sw:#ffb454" title="琥珀"></button>
+            <button data-c="#ff6b6b" style="--sw:#ff6b6b" title="红"></button>
+            <button data-c="#34d399" style="--sw:#34d399" title="绿"></button>
+            <button data-c="#a78bfa" style="--sw:#a78bfa" title="紫"></button>
+          </div>
+        </div>
+
+        <div class="ctl-row"><label>背景</label>
+          <div class="seg small" id="bgSeg">
+            <button class="active" data-bg="capsule">胶囊</button>
+            <button data-bg="card">方卡</button>
+            <button data-bg="outline">描边</button>
+          </div>
+        </div>
+
+        <div class="ctl-row"><label>大小 <output id="sizeOut">1.15×</output></label>
+          <input type="range" id="sizeRange" min="70" max="380" step="5" value="115">
+          <div class="range-scale"><span>小 0.7×</span><b>拖动调节 · 最大约屏 1/4</b><span>3.8×</span></div>
+        </div>
+        <div class="ctl-row"><label>透明度 <output id="opaOut">100%</output></label>
+          <input type="range" id="opaRange" min="30" max="100" value="100">
+          <div class="range-scale"><span>30%</span><span>100%</span></div>
+        </div>
+
+        <div class="ctl-row"><label>显示元素</label>
+          <div class="chip-row" id="elemChips">
+            <button class="chip active" data-e="sec">秒</button>
+            <button class="chip" data-e="date">日期</button>
+            <button class="chip" data-e="week">星期</button>
+            <button class="chip" data-e="batt">电量</button>
+          </div>
+        </div>
+
+        <div class="ctl-row"><label>毫秒位数</label>
+          <div class="chip-row" id="msdChips">
+            <button class="chip active" data-msd="0">关</button>
+            <button class="chip" data-msd="1">1 位 .s</button>
+            <button class="chip" data-msd="2">2 位 .ss</button>
+            <button class="chip" data-msd="3">3 位 .sss</button>
+          </div>
+        </div>
+
+        <div class="ctl-row"><label>交互</label>
+          <div class="chip-row">
+            <button class="chip active" id="snapChip">贴边吸附</button>
+            <button class="chip" disabled title="v1.0 内置">记住位置 ✓</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card tip-card">
+        <h3>对应真实实现</h3>
+        <ul class="mini-list">
+          <li><b>Android</b>：前台服务 + <code>WindowManager TYPE_APPLICATION_OVERLAY</code> 悬浮窗</li>
+          <li><b>鸿蒙</b>：<code>window.createWindow(TYPE_FLOAT)</code> + <code>FLOAT_WINDOW</code> 用户授权</li>
+          <li><b>精度</b>：时间戳差值驱动，进程冻结/息屏恢复后显示立即准确</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ TAB 2 样式库 ══════════════ -->
+<section class="tab-panel" id="tab-styles">
+  <div class="panel-head">
+    <h2>预设样式库</h2><p>点击卡片上的「应用到演示」实时预览 · 全部样式均支持大小 / 透明度二次调节</p>
+  </div>
+  <div class="style-grid" id="styleGrid"></div>
+</section>
+
+<!-- ══════════════ TAB 3 App 界面 ══════════════ -->
+<section class="tab-panel" id="tab-appui">
+  <div class="stage">
+    <div class="phone-col">
+      <div class="phone">
+        <div class="screen">
+          <div class="statusbar">
+            <span class="sb-time" data-sbtime>9:41</span>
+            <span class="sb-ico">
+              <i class="sig"></i><i class="sig"></i><i class="sig"></i><i class="sig off"></i>
+              <span class="net">5G</span><i class="batt"><i class="batt-fill" style="width:78%"></i></i>
+            </span>
+          </div>
+          <div class="app" id="appUI">
+
+            <header class="a-header">
+              <div>
+                <h2>悬浮时钟</h2>
+                <p data-live="date-line">10月2日 星期五</p>
+              </div>
+              <span class="perm-pill on" id="permPill">● 悬浮窗已开启</span>
+            </header>
+
+            <!-- 视图：计时 -->
+            <div class="a-view active" data-view="timer">
+              <div class="a-big">
+                <span data-live="clock">14:23</span><b data-live="clock-s">08</b>
+              </div>
+
+              <div class="mcard">
+                <div class="mcard-h"><span class="m-ic" style="--c:#34d399">▶</span>秒表</div>
+                <div class="m-big mono" data-live="sw">00:00.00</div>
+                <div class="row">
+                  <button class="btn primary sm" data-act="sw-toggle" id="appSwBtn">启动</button>
+                  <button class="btn ghost sm" data-act="sw-reset">重置</button>
+                </div>
+              </div>
+
+              <div class="mcard">
+                <div class="mcard-h"><span class="m-ic" style="--c:#ffb454">⏳</span>倒计时</div>
+                <div class="chip-row wrap">
+                  <button class="chip" data-min="1">1′</button>
+                  <button class="chip" data-min="3">3′</button>
+                  <button class="chip" data-min="5">5′</button>
+                  <button class="chip" data-min="10">10′</button>
+                  <button class="chip" data-min="25">25′</button>
+                  <button class="chip" data-min="60">60′</button>
+                </div>
+                <div class="row">
+                  <button class="btn primary sm" data-act="cd-start" id="appCdBtn">开始倒计时</button>
+                </div>
+              </div>
+
+              <div class="mcard running">
+                <div class="mcard-h"><span class="m-ic" style="--c:#22d3ee">◉</span>进行中</div>
+                <div class="run-grid">
+                  <div><b class="mono" data-live="cd">05:00</b><span>倒计时剩余</span></div>
+                  <div class="cd-ring"><i style="--p:100%"></i></div>
+                </div>
+                <div class="row">
+                  <button class="btn ghost sm" data-act="fc-show">隐藏悬浮窗</button>
+                  <button class="btn ghost sm" data-act="cd-cancel">结束</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 视图：样式 -->
+            <div class="a-view" data-view="styles">
+              <div class="a-view-title">样式</div>
+              <div class="mini-style-grid" id="appStyleGrid"></div>
+            </div>
+
+            <!-- 视图：记录 -->
+            <div class="a-view" data-view="records">
+              <div class="a-view-title">记录</div>
+              <ul class="rec-list">
+                <li><i style="--c:#ffb454">⏳</i><div><b>倒计时 · 5 分钟</b><span>今天 14:02 · 已完成 ✓</span></div></li>
+                <li><i style="--c:#34d399">▶</i><div><b>秒表 · 12:36.80</b><span>今天 13:40 · 4 次计次</span></div></li>
+                <li><i style="--c:#ffb454">⏳</i><div><b>倒计时 · 25 分钟</b><span>昨天 09:15 · 已完成 ✓</span></div></li>
+                <li><i style="--c:#34d399">▶</i><div><b>秒表 · 03:05.42</b><span>昨天 08:47</span></div></li>
+              </ul>
+            </div>
+
+            <!-- 视图：我的 -->
+            <div class="a-view" data-view="me">
+              <div class="a-view-title">我的</div>
+              <div class="mcard perm-check">
+                <div class="mcard-h"><span class="m-ic" style="--c:#22d3ee">✓</span>权限状态</div>
+                <ul class="perm-rows">
+                  <li><span>悬浮窗权限</span><b class="ok">已开启</b></li>
+                  <li><span>通知权限</span><b class="ok">已开启</b></li>
+                  <li><span>电池无限制</span><b class="warn" data-oe>去设置</b></li>
+                </ul>
+              </div>
+              <div class="mcard">
+                <div class="mcard-h"><span class="m-ic" style="--c:#a78bfa">⚙</span>设置</div>
+                <ul class="set-rows">
+                  <li><span>24 小时制</span><i class="tgl on"></i></li>
+                  <li><span>显示秒数</span><i class="tgl on"></i></li>
+                  <li><span>毫秒显示（费电）</span><i class="tgl"></i></li>
+                  <li><span>开机自启动</span><i class="tgl on"></i></li>
+                  <li><span>到点铃声 · 清脆铃音</span><b class="arrow">›</b></li>
+                  <li><span>关于 · 隐私政策</span><b class="arrow">›</b></li>
+                </ul>
+              </div>
+            </div>
+
+            <nav class="a-tabs" id="appTabs">
+              <button class="active" data-view="timer"><span>⏱</span>计时</button>
+              <button data-view="styles"><span>◑</span>样式</button>
+              <button data-view="records"><span>≡</span>记录</button>
+              <button data-view="me"><span>☺</span>我的</button>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <p class="phone-cap">App 首页（可点击底部 Tab 切换；计时数据与「悬浮演示」页联动）</p>
+    </div>
+
+    <div class="panel-col">
+      <div class="card">
+        <div class="card-h"><h3>页面结构</h3></div>
+        <ul class="mini-list">
+          <li><b>计时</b>：大时钟 + 秒表卡 / 倒计时快捷卡 + 「进行中」状态卡（可隐藏悬浮窗）</li>
+          <li><b>样式</b>：6 种预设 + 自定义（大小 / 透明度 / 颜色 / 背景 / 显示元素）</li>
+          <li><b>记录</b>：秒表与倒计时历史（本地存储，可导出）</li>
+          <li><b>我的</b>：权限状态体检卡 + 设置项</li>
+        </ul>
+      </div>
+      <div class="card tip-card">
+        <h3>设计说明</h3>
+        <ul class="mini-list">
+          <li>权限状态常驻首页右上角 —— 北极指标（悬浮窗开启率）的直接抓手</li>
+          <li>所有计时操作 1 次点击可达，无广告、无开屏</li>
+          <li>深色默认（悬浮场景夜间不刺眼），双端视觉与交互完全一致</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ TAB 4 权限引导 ══════════════ -->
+<section class="tab-panel" id="tab-permission">
+  <div class="panel-head">
+    <h2>首启权限引导（3 步）</h2>
+    <p>悬浮窗权限是转化关键页 · Android 走系统设置，鸿蒙为系统弹窗 —— 两套流程均已高保真还原</p>
+  </div>
+  <div class="perm-stage">
+
+    <div class="perm-col plat-android">
+      <div class="plat-tag">Android</div>
+      <div class="phone sm">
+        <div class="screen">
+          <div class="statusbar slim"><span class="sb-time" data-sbtime>9:41</span><span class="sb-ico"><i class="batt"><i class="batt-fill" style="width:78%"></i></i></span></div>
+          <div class="syspage">
+            <div class="sys-head">‹ 显示在其他应用上层</div>
+            <p class="sys-sub">特权和特殊应用</p>
+            <div class="sys-item">
+              <span class="app-mini-ic">⏱</span>
+              <div class="sys-item-t"><b>悬浮时钟</b><span>允许在其他应用上方显示</span></div>
+              <i class="tgl big" id="ovTgl" role="switch" aria-checked="false" tabindex="0"></i>
+            </div>
+            <div class="sys-sec">该手机（小米 HyperOS）还需开启</div>
+            <div class="sys-item dim"><div class="sys-item-t"><b>自启动</b><span>允许系统自动启动</span></div><i class="tgl big off locked"></i></div>
+            <div class="sys-item dim"><div class="sys-item-t"><b>省电策略 · 无限制</b><span>设置 › 应用 › 省电策略</span></div><b class="arrow">›</b></div>
+            <div class="step-bar">
+              <i class="done"></i><i class="done"></i><i></i>
+              <span>第 2 步 / 共 3 步</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="phone-cap">系统设置：显示在其他应用上层（点击开关可切换状态）</p>
+    </div>
+
+    <div class="perm-col plat-harmony">
+      <div class="plat-tag">HarmonyOS</div>
+      <div class="phone sm">
+        <div class="screen">
+          <div class="statusbar slim"><span class="sb-time" data-sbtime>9:41</span><span class="sb-ico"><i class="batt"><i class="batt-fill" style="width:78%"></i></i></span></div>
+          <div class="wp-perm"></div>
+          <div class="perm-dialog" id="hmDialog">
+            <span class="pd-ic">⏱</span>
+            <b>允许“悬浮时钟”显示悬浮窗吗？</b>
+            <p>用于在您使用其他应用时，于屏幕上方悬浮显示时钟、秒表与倒计时。</p>
+            <div class="pd-btns">
+              <button id="hmDeny">禁止</button>
+              <button id="hmAllow" class="primary">允许</button>
+            </div>
+          </div>
+          <div class="hm-ok" id="hmOk" hidden>
+            <i>✓</i><b>已允许悬浮窗</b>
+            <p>设置 › 应用 › 悬浮时钟 › 悬浮窗 ✓</p>
+            <p class="hm-tip">引导用户在最近任务中「下拉加锁」，提升后台存续（如实说明，不做欺骗性保活）</p>
+          </div>
+          <div class="step-bar">
+            <i class="done"></i><i></i><i></i>
+            <span>第 1 步 / 共 3 步</span>
+          </div>
+        </div>
+      </div>
+      <p class="phone-cap">系统权限弹窗（user_grant）：点击「允许」查看引导完成态</p>
+    </div>
+
+    <div class="perm-col wide">
+      <div class="card">
+        <div class="card-h"><h3>权限流程对比</h3></div>
+        <table class="cmp-table">
+          <tr><th></th><th>Android</th><th>HarmonyOS</th></tr>
+          <tr><td>权限</td><td><code>SYSTEM_ALERT_WINDOW</code>（特殊权限）</td><td><code>ohos.permission.FLOAT_WINDOW</code>（user_grant）</td></tr>
+          <tr><td>授权方式</td><td>跳系统设置页手动开启，返回后复检</td><td>App 内弹系统弹窗一次点击完成</td></tr>
+          <tr><td>额外步骤</td><td>各厂商自启动 / 省电 / 后台弹窗（配置驱动引导）</td><td>建议最近任务加锁 + 允许后台运行</td></tr>
+          <tr><td>通知权限</td><td>13+ 运行时申请</td><td>通知授权弹窗</td></tr>
+          <tr><td>被拒兜底</td><td>首页常驻状态卡 + 图文路径 + 一键跳转</td><td>同左</td></tr>
+        </table>
+      </div>
+      <div class="card tip-card">
+        <h3>已适配厂商引导（Android）</h3>
+        <div class="chip-row wrap">
+          <span class="chip static">小米 / HyperOS</span><span class="chip static">OPPO / ColorOS</span>
+          <span class="chip static">vivo / OriginOS</span><span class="chip static">荣耀 / MagicOS</span>
+          <span class="chip static">三星 / One UI</span><span class="chip static">华为老款 / EMUI</span>
+        </div>
+        <p class="note">引导路径做成 JSON 配置内置 + 远端可热更（技术方案 §2.3 vendor/）</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ TAB 5 小组件 · 实况窗 ══════════════ -->
+<section class="tab-panel" id="tab-widgets">
+  <div class="panel-head">
+    <h2>桌面小组件 · 鸿蒙服务卡片与实况窗 <span class="pill-ghost">P1 特性预览</span></h2>
+    <p>锁屏倒计时胶囊 / 状态栏胶囊是鸿蒙端差异化卖点（iOS 与 Android 均无此系统级能力）</p>
+  </div>
+  <div class="w-stage">
+
+    <div class="w-col plat-android">
+      <div class="plat-tag">Android 桌面小组件</div>
+      <div class="phone sm tall">
+        <div class="screen">
+          <div class="statusbar slim"><span class="sb-time" data-sbtime>9:41</span><span class="sb-ico"><i class="batt"><i class="batt-fill" style="width:78%"></i></i></span></div>
+          <div class="wallpaper wp-widget"></div>
+          <div class="dt-grid">
+            <div class="widget w2x2">
+              <b class="mono" data-live="clock">14:23</b>
+              <span data-live="date-line">10月2日 星期五</span>
+            </div>
+            <div class="widget w2x2 purple">
+              <span class="wg-lab">距离考试</span><b>3 天</b>
+            </div>
+            <div class="widget w4x2">
+              <div class="wg-cd-h"><span>⏳ 倒计时 · 泡面</span><b class="mono" data-live="cd">05:00</b></div>
+              <div class="cd-progress dark"><i data-live="cd-bar" style="width:100%"></i></div>
+              <span class="wg-foot">到点将提醒 · 点击 +1 分钟</span>
+            </div>
+          </div>
+          <div class="dock mini">
+            <span class="hi-ic" style="--c1:#34d399;--c2:#0ea5e9">电</span>
+            <span class="hi-ic" style="--c1:#f87171;--c2:#dc2626">网</span>
+            <span class="hi-ic" style="--c1:#a78bfa;--c2:#7c3aed">音</span>
+            <span class="hi-ic" style="--c1:#facc15;--c2:#f59e0b">商</span>
+          </div>
+        </div>
+      </div>
+      <p class="phone-cap">2×2 时钟 / 2×2 倒数日 / 4×2 倒计时（RemoteViews / Glance）</p>
+    </div>
+
+    <div class="w-col plat-harmony">
+      <div class="plat-tag">HarmonyOS 服务卡片</div>
+      <div class="phone sm tall">
+        <div class="screen">
+          <div class="statusbar slim"><span class="sb-time" data-sbtime>9:41</span><span class="sb-ico"><i class="batt"><i class="batt-fill" style="width:78%"></i></i></span></div>
+          <div class="wallpaper wp-hm"></div>
+          <div class="dt-grid">
+            <div class="widget w2x2 hm">
+              <b class="mono" data-live="clock">14:23</b>
+              <span data-live="date-line">10月2日 星期五</span>
+            </div>
+            <div class="widget w2x2 hm flip">
+              <div class="flip-card"><span class="flip-d" data-live="clock-s2">08</span></div>
+              <span class="wg-lab">翻页秒 · 床头钟</span>
+            </div>
+            <div class="widget w4x2 hm">
+              <div class="wg-cd-h"><span>◉ 秒表</span><b class="mono" data-live="sw">00:00.00</b></div>
+              <span class="wg-foot">FormExtensionAbility · 服务卡片</span>
+            </div>
+          </div>
+          <div class="dock mini">
+            <span class="hi-ic" style="--c1:#34d399;--c2:#0ea5e9">电</span>
+            <span class="hi-ic" style="--c1:#f87171;--c2:#dc2626">网</span>
+            <span class="hi-ic" style="--c1:#a78bfa;--c2:#7c3aed">音</span>
+            <span class="hi-ic" style="--c1:#facc15;--c2:#f59e0b">商</span>
+          </div>
+        </div>
+      </div>
+      <p class="phone-cap">服务卡片（2×2 数字钟 / 翻页秒针 / 4×2 秒表）</p>
+    </div>
+
+    <div class="w-col plat-harmony">
+      <div class="plat-tag">HarmonyOS 实况窗 · 锁屏</div>
+      <div class="phone sm tall dark">
+        <div class="screen">
+          <div class="statusbar slim invert"><span class="sb-time" data-sbtime>9:41</span><span class="sb-ico"><i class="batt"><i class="batt-fill" style="width:78%"></i></i></span></div>
+          <div class="lockscreen">
+            <div class="lk-date" data-live="date-line">10月2日 星期五</div>
+            <div class="lk-time"><span data-live="clock">14:23</span><b data-live="clock-s">08</b></div>
+
+            <div class="live-capsule">
+              <i class="lc-ico">⏳</i>
+              <div class="lc-body">
+                <span class="lc-title">泡面倒计时</span>
+                <b class="mono" data-live="cd">05:00</b>
+              </div>
+              <i class="lc-prog" style="--p:64%"></i>
+            </div>
+            <div class="live-card">
+              <div class="lv-h"><span><i>⏳</i> 泡面倒计时</span><b class="mono lc-hot" data-live="cd">05:00</b></div>
+              <div class="cd-progress light"><i data-live="cd-bar" style="width:100%"></i></div>
+              <div class="lv-row"><span>14:28 结束 · 到点响铃</span><span class="lv-dim">Live View Kit</span></div>
+            </div>
+            <div class="lk-hint">上滑解锁</div>
+          </div>
+        </div>
+      </div>
+      <p class="phone-cap">锁屏实况窗：胶囊态 + 卡片态（倒计时到 0 系统自动结束）</p>
+    </div>
+
+    <div class="w-col wide">
+      <div class="card">
+        <div class="card-h"><h3>双端能力对照</h3></div>
+        <table class="cmp-table">
+          <tr><th></th><th>Android</th><th>HarmonyOS</th></tr>
+          <tr><td>全局悬浮窗</td><td>✅ TYPE_APPLICATION_OVERLAY</td><td>✅ TYPE_FLOAT</td></tr>
+          <tr><td>桌面小组件 / 服务卡片</td><td>✅ AppWidget / Glance</td><td>✅ FormExtensionAbility</td></tr>
+          <tr><td>锁屏实时倒计时</td><td>—（仅普通通知）</td><td>✅ 实况窗 Live View</td></tr>
+          <tr><td>状态栏胶囊</td><td>—</td><td>✅ 实况窗胶囊态</td></tr>
+          <tr><td>到点必达兜底</td><td>前台服务 + 精确闹钟</td><td>reminderAgentManager 代理提醒</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p>本原型为纯前端高保真演示（无外部依赖，可离线打开）；系统界面为近似还原，以真机为准。</p>
+  <p><a href="../docs/01-调研报告.md">调研报告</a> · <a href="../docs/02-产品需求文档PRD.md">产品需求 PRD</a> · <a href="../docs/03-技术方案设计.md">技术方案</a> · <a href="../docs/04-开发计划.md">开发计划</a></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

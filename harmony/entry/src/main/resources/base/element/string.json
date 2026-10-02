@@ -1,0 +1,8 @@
+{
+  "string": [
+    { "name": "EntryAbility_label", "value": "兔时笺" },
+    { "name": "EntryAbility_desc", "value": "跨界面悬浮计时工具" },
+    { "name": "float_window_reason", "value": "用于在您使用其他应用时，于屏幕上方悬浮显示时钟、秒表与倒计时" },
+    { "name": "main_page_title", "value": "兔时笺" }
+  ]
+}

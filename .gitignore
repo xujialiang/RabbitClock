@@ -1,0 +1,30 @@
+# ── 构建产物 ──
+android/app/build/
+android/.gradle/
+android/build/
+harmony/build/
+harmony/entry/build/
+harmony/oh_modules/
+harmony/.hvigor/
+ios/build/
+DerivedData/
+*.apk
+*.aab
+*.hap
+*.ipa
+
+# ── 机器本地配置与密钥（勿入库）──
+local.properties
+android/keystore
+android/keystore.properties
+*.jks
+*.keystore
+
+# ── Xcode 用户数据 ──
+xcuserdata/
+*.xcuserstate
+
+# ── 工具状态 ──
+.mimosa/
+.DS_Store
+*.log

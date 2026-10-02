@@ -1,0 +1,51 @@
+name: FloatClock
+options:
+  bundleIdPrefix: com.floatclock
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "1.1.2"
+    CURRENT_PROJECT_VERSION: "12"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+targets:
+  FloatClock:
+    type: application
+    platform: iOS
+    sources:
+      - FloatClock
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rabbitai-lab.floatclock
+    info:
+      path: FloatClock/Info.plist
+      properties:
+        CFBundleDisplayName: 兔时笺
+        CFBundleIcons:
+          CFBundlePrimaryIcon:
+            CFBundleIconFiles:
+              - AppIcon29x29
+              - AppIcon40x40
+              - AppIcon60x60
+              - AppIcon76x76
+              - AppIcon83.5x83.5
+        CFBundleLocalizations: [zh-Hans, en, zh-Hant, ja, ko, es, pt-BR, fr, de, it, ru, ar]
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        # PiP 悬浮保活：后台音频（画中画在音频后台模式下才可持续运行）
+        UIBackgroundModes:
+          - audio
+        ITSAppUsesNonExemptEncryption: false
+schemes:
+  FloatClock:
+    build:
+      targets:
+        FloatClock: all
+    run:
+      config: Debug

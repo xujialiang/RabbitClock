@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">兔时笺</string>
+    <string name="notif_channel_timer">兔时笺计时</string>
+    <string name="notif_channel_timer_desc">保持计时与悬浮窗运行的通知</string>
+    <string name="notif_channel_alarm">到点提醒</string>
+    <string name="notif_channel_alarm_desc">倒计时结束的铃声与振动提醒</string>
+    <string name="notif_title">兔时笺运行中</string>
+    <string name="notif_action_pause">暂停</string>
+    <string name="notif_action_resume">继续</string>
+    <string name="notif_action_add1">+1 分钟</string>
+    <string name="notif_action_close">关闭</string>
+    <string name="alarm_done">时间到！</string>
+    <string name="alarm_done_sub">倒计时已结束，点击停止提醒</string>
+    <string name="alarm_stop">停止提醒</string>
+</resources>

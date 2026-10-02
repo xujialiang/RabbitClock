@@ -1,0 +1,7 @@
+{
+  "modelVersion": "5.0.0",
+  "name": "floatclock",
+  "version": "0.1.0",
+  "description": "悬浮时钟 HarmonyOS 版",
+  "dependencies": {}
+}

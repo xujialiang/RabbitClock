@@ -1,0 +1,40 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "deviceTypes": ["phone"],
+    "requestPermissions": [
+      {
+        // 悬浮窗权限：user_grant，三方应用可申请（注意：SYSTEM_FLOAT_WINDOW 是 ACL 受限权限，勿用）
+        "name": "ohos.permission.FLOAT_WINDOW",
+        "reason": "$string:float_window_reason",
+        "usedScene": {
+          "abilities": ["EntryAbility"],
+          "when": "always"
+        }
+      },
+      {
+        // 代理提醒：倒计时到点的系统级兜底（进程被杀也由系统触发）
+        "name": "ohos.permission.PUBLISH_AGENT_REMINDER"
+      },
+      {
+        // 时间源校准（默认北京时间·国家授时中心等）：仅校准时访问所选服务器
+        "name": "ohos.permission.INTERNET"
+      }
+    ],
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ets",
+        "exported": true,
+        "description": "$string:EntryAbility_desc",
+        "icon": "$media:icon",
+        "label": "$string:EntryAbility_label",
+        "startWindowIcon": "$media:icon",
+        "startWindowBackground": "$color:start_window_background",
+        "orientation": "auto"
+      }
+    ],
+    "pages": "$profile:main_pages"
+  }
+}

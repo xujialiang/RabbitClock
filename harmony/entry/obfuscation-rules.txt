@@ -1,0 +1,2 @@
+# 混淆规则（release 默认关闭，按需开启）
+-disable-obfuscation

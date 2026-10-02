@@ -53,8 +53,13 @@ final class PipClockController: NSObject {
                 sampleBufferDisplayLayer: displayLayer, playbackDelegate: self)
             pip = AVPictureInPictureController(contentSource: src)
             pip?.delegate = self
-            // 时钟是"直播"内容：藏掉快进/快退按钮（暂停键为系统 UI，静置数秒自动隐藏）
-            pip?.requiresLinearPlayback = true
+            // 真机验证：requiresLinearPlayback 对 sampleBuffer 通道不生效（仅 AVPlayer 通道）。
+            // controlsStyle=1 隐藏 前进/后退 + 暂停 + 进度条（保留关闭按钮）。
+            // 私有属性，responds 守卫保证未来 iOS 移除时自动退化为系统控制条；
+            // 若审核质疑（2.5.1），删除这两行即可回退
+            if pip?.responds(to: NSSelectorFromString("setControlsStyle:")) == true {
+                pip?.setValue(1, forKey: "controlsStyle")
+            }
         }
         pip?.startPictureInPicture()
     }

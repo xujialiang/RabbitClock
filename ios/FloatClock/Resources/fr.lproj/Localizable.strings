@@ -28,6 +28,7 @@
 "pip.fail" = "Échec du démarrage PiP : %@";
 "notif.cd.done" = "Compte à rebours terminé";
 "style.color" = "Couleur principale";
+"style.colorpick" = "Couleur personnalisée";
 "style.bg" = "Arrière-plan";
 "style.size" = "Taille %@×";
 "style.opacity" = "Opacité %d%%";

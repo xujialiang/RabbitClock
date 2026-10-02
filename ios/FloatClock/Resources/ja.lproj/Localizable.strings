@@ -28,6 +28,7 @@
 "pip.fail" = "PiPの開始に失敗：%@";
 "notif.cd.done" = "カウントダウン終了";
 "style.color" = "テーマカラー";
+"style.colorpick" = "カスタムカラー";
 "style.bg" = "背景";
 "style.size" = "サイズ %@×";
 "style.opacity" = "不透明度 %d%%";

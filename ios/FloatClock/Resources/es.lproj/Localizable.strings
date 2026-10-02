@@ -28,6 +28,7 @@
 "pip.fail" = "Error al iniciar PiP: %@";
 "notif.cd.done" = "Cuenta regresiva terminada";
 "style.color" = "Color principal";
+"style.colorpick" = "Color personalizado";
 "style.bg" = "Fondo";
 "style.size" = "Tamaño %@×";
 "style.opacity" = "Opacidad %d%%";

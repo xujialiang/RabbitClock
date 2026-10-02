@@ -28,6 +28,7 @@
 "pip.fail" = "PiP-Start fehlgeschlagen: %@";
 "notif.cd.done" = "Countdown beendet";
 "style.color" = "Akzentfarbe";
+"style.colorpick" = "Benutzerdefinierte Farbe";
 "style.bg" = "Hintergrund";
 "style.size" = "Größe %@×";
 "style.opacity" = "Deckkraft %d%%";

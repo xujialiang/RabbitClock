@@ -28,6 +28,7 @@
 "pip.fail" = "Не удалось запустить PiP: %@";
 "notif.cd.done" = "Обратный отсчёт завершён";
 "style.color" = "Основной цвет";
+"style.colorpick" = "Пользовательский цвет";
 "style.bg" = "Фон";
 "style.size" = "Размер %@×";
 "style.opacity" = "Прозрачность %d%%";

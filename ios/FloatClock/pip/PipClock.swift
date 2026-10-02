@@ -182,43 +182,25 @@ final class PipClockController: NSObject {
         guard let ctx else { return }
 
         let accent = UIColor(hex: style.colorHex)
-        let alpha = style.opacity
+        var cr: CGFloat = 0, cg: CGFloat = 0, cb: CGFloat = 0, ca: CGFloat = 0
+        accent.getRed(&cr, green: &cg, blue: &cb, alpha: &ca)
 
-        // 背景：近黑底（PiP 不支持透明）+ 按样式页设置的卡片样式
+        // 颜色 = 整个播放器背景（PiP 不支持透明，先铺深底再叠色；
+        // opacity 作为颜色浓度）。无边框样式
         ctx.setFillColor(CGColor(red: 0.02, green: 0.03, blue: 0.06, alpha: 1))
         ctx.fill(CGRect(x: 0, y: 0, width: bufW, height: bufH))
-        let capsule = CGRect(x: Double(bufW) * 0.04, y: Double(bufH) * 0.22,
-                             width: Double(bufW) * 0.92, height: Double(bufH) * 0.56)
-        switch style.bg {
-        case .capsule:
-            let path = CGPath(
-                roundedRect: capsule,
-                cornerWidth: capsule.height / 2,
-                cornerHeight: capsule.height / 2,
-                transform: nil)
-            ctx.addPath(path)
-            ctx.setFillColor(accent.withAlphaComponent(0.16 * alpha).cgColor)
-            ctx.fillPath()
-            ctx.addPath(path)
-            ctx.setStrokeColor(accent.withAlphaComponent(0.5 * alpha).cgColor)
-            ctx.setLineWidth(2)
-            ctx.strokePath()
-        case .card:
-            let path = CGPath(
-                roundedRect: capsule,
-                cornerWidth: 22,
-                cornerHeight: 22,
-                transform: nil)
-            ctx.addPath(path)
-            ctx.setFillColor(accent.withAlphaComponent(0.14 * alpha).cgColor)
-            ctx.fillPath()
-            ctx.addPath(path)
-            ctx.setStrokeColor(accent.withAlphaComponent(0.45 * alpha).cgColor)
-            ctx.setLineWidth(2)
-            ctx.strokePath()
-        case .outline:
-            break // 无背景：仅文字浮在深底上
-        }
+        ctx.setFillColor(accent.withAlphaComponent(CGFloat(style.opacity)).cgColor)
+        ctx.fill(CGRect(x: 0, y: 0, width: bufW, height: bufH))
+
+        // 文字按背景实际亮度自适应黑/白
+        let lum = Double(style.opacity) * (0.299 * Double(cr) + 0.587 * Double(cg) + 0.114 * Double(cb))
+        let textColor = lum > 0.55
+            ? UIColor(red: 0.06, green: 0.07, blue: 0.10, alpha: 1)
+            : .white
+
+        // 文字布局区（无形，仅定位）
+        let capsule = CGRect(x: Double(bufW) * 0.04, y: Double(bufH) * 0.24,
+                             width: Double(bufW) * 0.92, height: Double(bufH) * 0.52)
 
         // 主时间文字（等宽数字）
         let fontRatio = min(0.52 * (style.scale / 1.15), 0.62)
@@ -227,7 +209,7 @@ final class PipClockController: NSObject {
         let text = t.main + t.sec + t.ms
         let attrs: [NSAttributedString.Key: Any] = [
             .font: font,
-            .foregroundColor: accent.withAlphaComponent(alpha),
+            .foregroundColor: textColor,
         ]
         let size = (text as NSString).size(withAttributes: attrs)
         let tx = capsule.midX - size.width / 2
@@ -245,7 +227,7 @@ final class PipClockController: NSObject {
             let subFont = UIFont.systemFont(ofSize: capsule.height * 0.13)
             let subAttrs: [NSAttributedString.Key: Any] = [
                 .font: subFont,
-                .foregroundColor: accent.withAlphaComponent(0.92 * alpha),
+                .foregroundColor: textColor.withAlphaComponent(0.88),
             ]
             let ss = (t.sub as NSString).size(withAttributes: subAttrs)
             (t.sub as NSString).draw(

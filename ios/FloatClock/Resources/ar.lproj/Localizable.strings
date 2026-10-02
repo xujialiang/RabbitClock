@@ -28,6 +28,7 @@
 "pip.fail" = "فشل بدء PiP: %@";
 "notif.cd.done" = "انتهى العد التنازلي";
 "style.color" = "اللون الرئيسي";
+"style.colorpick" = "لون مخصص";
 "style.bg" = "الخلفية";
 "style.size" = "الحجم %@×";
 "style.opacity" = "العتامة %d%%";

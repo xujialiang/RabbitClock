@@ -28,6 +28,7 @@
 "pip.fail" = "画中画启动失败：%@";
 "notif.cd.done" = "倒计时结束";
 "style.color" = "主题色";
+"style.colorpick" = "自定义颜色";
 "style.bg" = "背景";
 "style.size" = "大小 %@×";
 "style.opacity" = "透明度 %d%%";

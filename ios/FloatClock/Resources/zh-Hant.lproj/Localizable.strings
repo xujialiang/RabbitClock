@@ -28,6 +28,7 @@
 "pip.fail" = "子母畫面啟動失敗：%@";
 "notif.cd.done" = "倒計時結束";
 "style.color" = "主題色";
+"style.colorpick" = "自定義顏色";
 "style.bg" = "背景";
 "style.size" = "大小 %@×";
 "style.opacity" = "透明度 %d%%";

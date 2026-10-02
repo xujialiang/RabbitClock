@@ -28,6 +28,7 @@
 "pip.fail" = "Failed to start PiP: %@";
 "notif.cd.done" = "Countdown finished";
 "style.color" = "Accent color";
+"style.colorpick" = "Custom color";
 "style.bg" = "Background";
 "style.size" = "Size %@×";
 "style.opacity" = "Opacity %d%%";

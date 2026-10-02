@@ -35,11 +35,13 @@ final class PipClockController: NSObject {
             AppModel.shared.pipHint = L("pip.nosupport")
             return
         }
-        // layer 需挂在窗口内一个 1pt 视图上（PiP 启动后由系统接管显示）
-        let host = UIView(frame: CGRect(x: -10, y: -10, width: 1, height: 1))
+        // layer 需挂在窗口内视图上（PiP 启动后由系统接管显示）；
+        // 尺寸用视频宽高比的真实值——1×1 退化尺寸会让 PiP 渲染管线拿不到有效 render size
+        let host = UIView(frame: CGRect(x: -200, y: -200, width: 160, height: 80))
         view.addSubview(host)
         host.layer.addSublayer(displayLayer)
         displayLayer.frame = host.bounds
+        displayLayer.videoGravity = .resizeAspect
         hostView = host
 
         startKeepAliveAudio()
@@ -88,6 +90,9 @@ final class PipClockController: NSObject {
     }
 
     private func renderFrame() {
+        // failed 后 enqueue 会被静默丢弃（黑屏）；flush 复位管线状态
+        if displayLayer.status == .failed { displayLayer.flush() }
+        guard displayLayer.isReadyForMoreMediaData else { return }
         guard let px = makePixelBuffer() else { return }
         drawClock(into: px)
         guard let sb = sampleBuffer(from: px) else { return }
@@ -96,7 +101,12 @@ final class PipClockController: NSObject {
 
     private func makePixelBuffer() -> CVPixelBuffer? {
         var px: CVPixelBuffer?
-        let attrs: [CFString: Any] = [kCVPixelBufferCGImageCompatibilityKey: true]
+        // IOSurface 背书是硬性要求：AVSampleBufferDisplayLayer 只接受 IOSurface-backed
+        // 缓冲，缺了它 enqueue 直接失败、层进入 failed 状态 → PiP 黑屏
+        let attrs: [CFString: Any] = [
+            kCVPixelBufferCGImageCompatibilityKey: true,
+            kCVPixelBufferIOSurfacePropertiesKey: [:] as [String: Any],
+        ]
         CVPixelBufferCreate(kCFAllocatorDefault, bufW, bufH, kCVPixelFormatType_32BGRA, attrs as CFDictionary, &px)
         return px
     }
@@ -273,6 +283,9 @@ extension PipClockController: @preconcurrency AVPictureInPictureControllerDelega
         _ controller: AVPictureInPictureController
     ) {
         active = true
+        // 系统接管渲染管线时会清空已入队帧：flush 复位后立刻补一帧，避免 PiP 窗口黑屏
+        displayLayer.flush()
+        renderFrame()
         startRenderLoop()
         AppModel.shared.floatVisible = true
         AppModel.shared.pipHint = nil

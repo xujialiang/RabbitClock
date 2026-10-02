@@ -30,7 +30,7 @@ struct MeView: View {
 
                 card {
                     Text(L("me.about")).font(.subheadline.weight(.medium)).padding(.bottom, 4)
-                    Text(LF("me.body", "\(L("app.title")) v1.1.6"))
+                    Text(LF("me.body", "\(L("app.title")) v1.1.7"))
                         .font(.caption).foregroundStyle(.secondary).lineSpacing(4)
                 }
                 .padding(.top, 10)

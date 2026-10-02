@@ -52,6 +52,8 @@ final class PipClockController: NSObject {
                 sampleBufferDisplayLayer: displayLayer, playbackDelegate: self)
             pip = AVPictureInPictureController(contentSource: src)
             pip?.delegate = self
+            // 时钟是"直播"内容：藏掉快进/快退按钮（暂停键为系统 UI，静置数秒自动隐藏）
+            pip?.requiresLinearPlayback = true
         }
         pip?.startPictureInPicture()
     }
@@ -201,6 +203,9 @@ final class PipClockController: NSObject {
         ctx.saveGState()
         ctx.translateBy(x: 0, y: CGFloat(bufH))
         ctx.scaleBy(x: 1, y: -1)
+        // NSString.draw 是 UIKit 调用，只画进 UIGraphics 栈里的当前上下文；
+        // 必须把 CVPixelBuffer 的 CGContext 压栈，否则文字静默不渲染（形状不受影响）
+        UIGraphicsPushContext(ctx)
         (text as NSString).draw(at: CGPoint(x: tx, y: CGFloat(bufH) - tyTop - size.height),
                                 withAttributes: attrs)
         if !t.sub.isEmpty {
@@ -214,6 +219,7 @@ final class PipClockController: NSObject {
                 at: CGPoint(x: capsule.midX - ss.width / 2, y: CGFloat(bufH) - capsule.minY + 6),
                 withAttributes: subAttrs)
         }
+        UIGraphicsPopContext()
         ctx.restoreGState()
     }
 

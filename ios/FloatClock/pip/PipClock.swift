@@ -198,22 +198,34 @@ final class PipClockController: NSObject {
             ? UIColor(red: 0.06, green: 0.07, blue: 0.10, alpha: 1)
             : .white
 
-        // 文字布局区（无形，仅定位）
-        let capsule = CGRect(x: Double(bufW) * 0.04, y: Double(bufH) * 0.24,
-                             width: Double(bufW) * 0.92, height: Double(bufH) * 0.52)
-
-        // 主时间文字（等宽数字）
-        let fontRatio = min(0.52 * (style.scale / 1.15), 0.62)
-        let fontSz = capsule.height * fontRatio
-        let font = UIFont.monospacedDigitSystemFont(ofSize: fontSz, weight: .bold)
+        // 主时间文字：宽度撑满播放器（等宽数字，受高度上限保护）
         let text = t.main + t.sec + t.ms
+        let targetW = Double(bufW) * 0.92
+        let refFont = UIFont.monospacedDigitSystemFont(ofSize: 100, weight: .bold)
+        let refW = Double((text as NSString).size(withAttributes: [.font: refFont]).width)
+        let capH = Double(bufH) * (t.sub.isEmpty ? 0.80 : 0.52)
+        let fontSz = min(100.0 * targetW / max(refW, 1.0), capH)
+        let font = UIFont.monospacedDigitSystemFont(ofSize: fontSz, weight: .bold)
         let attrs: [NSAttributedString.Key: Any] = [
             .font: font,
             .foregroundColor: textColor,
         ]
         let size = (text as NSString).size(withAttributes: attrs)
-        let tx = capsule.midX - size.width / 2
-        let tyTop = capsule.midY - size.height / 2
+
+        var subAttrs: [NSAttributedString.Key: Any] = [:]
+        var subW: Double = 0, subH: Double = 0
+        if !t.sub.isEmpty {
+            let subFont = UIFont.systemFont(ofSize: Double(bufH) * 0.085)
+            subAttrs = [
+                .font: subFont,
+                .foregroundColor: textColor.withAlphaComponent(0.88),
+            ]
+            let ss = (t.sub as NSString).size(withAttributes: subAttrs)
+            subW = Double(ss.width); subH = Double(ss.height)
+        }
+        let gap: Double = t.sub.isEmpty ? 0 : Double(bufH) * 0.03
+        let totalH = Double(size.height) + gap + subH
+        let y0 = (Double(bufH) - totalH) / 2
 
         ctx.saveGState()
         ctx.translateBy(x: 0, y: CGFloat(bufH))
@@ -221,17 +233,14 @@ final class PipClockController: NSObject {
         // NSString.draw 是 UIKit 调用，只画进 UIGraphics 栈里的当前上下文；
         // 必须把 CVPixelBuffer 的 CGContext 压栈，否则文字静默不渲染（形状不受影响）
         UIGraphicsPushContext(ctx)
-        (text as NSString).draw(at: CGPoint(x: tx, y: CGFloat(bufH) - tyTop - size.height),
-                                withAttributes: attrs)
+        (text as NSString).draw(
+            at: CGPoint(x: CGFloat(Double(bufW) - Double(size.width)) / 2,
+                        y: CGFloat(Double(bufH) - y0 - Double(size.height))),
+            withAttributes: attrs)
         if !t.sub.isEmpty {
-            let subFont = UIFont.systemFont(ofSize: capsule.height * 0.13)
-            let subAttrs: [NSAttributedString.Key: Any] = [
-                .font: subFont,
-                .foregroundColor: textColor.withAlphaComponent(0.88),
-            ]
-            let ss = (t.sub as NSString).size(withAttributes: subAttrs)
             (t.sub as NSString).draw(
-                at: CGPoint(x: capsule.midX - ss.width / 2, y: CGFloat(bufH) - capsule.minY + 6),
+                at: CGPoint(x: CGFloat((Double(bufW) - subW) / 2),
+                            y: CGFloat(Double(bufH) - y0 - Double(size.height) - gap - subH)),
                 withAttributes: subAttrs)
         }
         UIGraphicsPopContext()

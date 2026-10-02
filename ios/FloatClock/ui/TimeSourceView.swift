@@ -58,7 +58,6 @@ struct TimeSourceView: View {
 
     private var statusCard: some View {
         let src = Sources.byId(timeSync.selectedId)
-        let res = timeSync.results[src.id]
         let isSyncing = timeSync.syncing.contains(src.id)
 
         return VStack(alignment: .leading, spacing: 8) {

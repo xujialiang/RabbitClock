@@ -7,8 +7,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.9"
-    MARKETING_VERSION: "1.1.2"
-    CURRENT_PROJECT_VERSION: "12"
+    MARKETING_VERSION: "1.1.3"
+    CURRENT_PROJECT_VERSION: "13"
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Automatic
 targets:
@@ -38,6 +38,8 @@ targets:
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+        # 竖屏锁定时钟应用：声明全屏必需，App Store 校验即接受仅竖屏（免"All orientations"警告）
+        UIRequiresFullScreen: true
         # PiP 悬浮保活：后台音频（画中画在音频后台模式下才可持续运行）
         UIBackgroundModes:
           - audio

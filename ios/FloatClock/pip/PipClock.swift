@@ -267,8 +267,8 @@ final class PipClockController: NSObject {
 }
 
 // MARK: - AVPictureInPictureControllerDelegate
-
-extension PipClockController: AVPictureInPictureControllerDelegate {
+// AVFoundation 回调本身在主线程送达；@preconcurrency 消除跨隔离诊断（Swift 6 下为错误）
+extension PipClockController: @preconcurrency AVPictureInPictureControllerDelegate {
     func pictureInPictureControllerDidStartPictureInPicture(
         _ controller: AVPictureInPictureController
     ) {

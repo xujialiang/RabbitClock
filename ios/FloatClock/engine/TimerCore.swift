@@ -102,7 +102,7 @@ final class Countdown {
 enum Fmt {
     static func clock(h24: Bool, withSeconds: Bool, millisDigits: Int, nowWall: Double) -> (main: String, sec: String, ms: String) {
         let d = Date(timeIntervalSince1970: nowWall / 1000)
-        var c = Calendar.current.dateComponents([.hour, .minute, .second, .nanosecond], from: d)
+        let c = Calendar.current.dateComponents([.hour, .minute, .second, .nanosecond], from: d)
         var h = c.hour ?? 0
         if !h24 { h = h % 12; if h == 0 { h = 12 } }
         let main = String(format: "%02d:%02d", h, c.minute ?? 0)

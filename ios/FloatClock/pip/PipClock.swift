@@ -20,6 +20,7 @@ final class PipClockController: NSObject {
     private var audioPlayer: AVAudioPlayer?
     private var hostView: UIView?
     private(set) var active = false
+    private var userPaused = false
 
     private let bufW = 640
     private let bufH = 320
@@ -136,6 +137,10 @@ final class PipClockController: NSObject {
             var bits: [String] = []
             if style.showDate { bits.append(Fmt.dateLine(displayNow)) }
             if style.showWeek { bits.append(Fmt.weekLine(displayNow)) }
+            if style.showBattery {
+                let lv = UIDevice.current.batteryLevel
+                if lv >= 0 { bits.append("\(Int(lv * 100))%") }
+            }
             out.sub = bits.joined(separator: " · ")
         case .stopwatch:
             let p = Fmt.stopwatch(AppModel.shared.stopwatch.elapsed(nowMs: Mono.nowMs() + comp),
@@ -168,24 +173,43 @@ final class PipClockController: NSObject {
         guard let ctx else { return }
 
         let accent = UIColor(hex: style.colorHex)
+        let alpha = style.opacity
 
-        // 背景：近黑底（PiP 不支持透明）+ 圆角胶囊
+        // 背景：近黑底（PiP 不支持透明）+ 按样式页设置的卡片样式
         ctx.setFillColor(CGColor(red: 0.02, green: 0.03, blue: 0.06, alpha: 1))
         ctx.fill(CGRect(x: 0, y: 0, width: bufW, height: bufH))
         let capsule = CGRect(x: Double(bufW) * 0.04, y: Double(bufH) * 0.22,
                              width: Double(bufW) * 0.92, height: Double(bufH) * 0.56)
-        let path = CGPath(
-            roundedRect: capsule,
-            cornerWidth: capsule.height / 2,
-            cornerHeight: capsule.height / 2,
-            transform: nil)
-        ctx.addPath(path)
-        ctx.setFillColor(accent.withAlphaComponent(0.16).cgColor)
-        ctx.fillPath()
-        ctx.addPath(path)
-        ctx.setStrokeColor(accent.withAlphaComponent(0.5).cgColor)
-        ctx.setLineWidth(2)
-        ctx.strokePath()
+        switch style.bg {
+        case .capsule:
+            let path = CGPath(
+                roundedRect: capsule,
+                cornerWidth: capsule.height / 2,
+                cornerHeight: capsule.height / 2,
+                transform: nil)
+            ctx.addPath(path)
+            ctx.setFillColor(accent.withAlphaComponent(0.16 * alpha).cgColor)
+            ctx.fillPath()
+            ctx.addPath(path)
+            ctx.setStrokeColor(accent.withAlphaComponent(0.5 * alpha).cgColor)
+            ctx.setLineWidth(2)
+            ctx.strokePath()
+        case .card:
+            let path = CGPath(
+                roundedRect: capsule,
+                cornerWidth: 22,
+                cornerHeight: 22,
+                transform: nil)
+            ctx.addPath(path)
+            ctx.setFillColor(accent.withAlphaComponent(0.14 * alpha).cgColor)
+            ctx.fillPath()
+            ctx.addPath(path)
+            ctx.setStrokeColor(accent.withAlphaComponent(0.45 * alpha).cgColor)
+            ctx.setLineWidth(2)
+            ctx.strokePath()
+        case .outline:
+            break // 无背景：仅文字浮在深底上
+        }
 
         // 主时间文字（等宽数字）
         let fontRatio = min(0.52 * (style.scale / 1.15), 0.62)
@@ -194,7 +218,7 @@ final class PipClockController: NSObject {
         let text = t.main + t.sec + t.ms
         let attrs: [NSAttributedString.Key: Any] = [
             .font: font,
-            .foregroundColor: accent,
+            .foregroundColor: accent.withAlphaComponent(alpha),
         ]
         let size = (text as NSString).size(withAttributes: attrs)
         let tx = capsule.midX - size.width / 2
@@ -212,7 +236,7 @@ final class PipClockController: NSObject {
             let subFont = UIFont.systemFont(ofSize: capsule.height * 0.13)
             let subAttrs: [NSAttributedString.Key: Any] = [
                 .font: subFont,
-                .foregroundColor: accent.withAlphaComponent(0.92),
+                .foregroundColor: accent.withAlphaComponent(0.92 * alpha),
             ]
             let ss = (t.sub as NSString).size(withAttributes: subAttrs)
             (t.sub as NSString).draw(
@@ -325,7 +349,18 @@ extension PipClockController: AVPictureInPictureSampleBufferPlaybackDelegate {
     nonisolated func pictureInPictureController(
         _ controller: AVPictureInPictureController,
         setPlaying playing: Bool
-    ) {}
+    ) {
+        // 暂停=冻结画面（停止喂帧，末帧驻留）；继续=恢复渲染
+        MainActor.assumeIsolated {
+            userPaused = !playing
+            if playing {
+                startRenderLoop()
+            } else {
+                renderTimer?.invalidate()
+                renderTimer = nil
+            }
+        }
+    }
 
     nonisolated func pictureInPictureControllerTimeRangeForPlayback(
         _ controller: AVPictureInPictureController
@@ -333,7 +368,7 @@ extension PipClockController: AVPictureInPictureSampleBufferPlaybackDelegate {
 
     nonisolated func pictureInPictureControllerIsPlaybackPaused(
         _ controller: AVPictureInPictureController
-    ) -> Bool { false }
+    ) -> Bool { MainActor.assumeIsolated { userPaused } }
 
     nonisolated func pictureInPictureController(
         _ controller: AVPictureInPictureController,
